@@ -1,0 +1,36 @@
+@import './fonts';
+
+html,
+body {
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  background: map-get($theme-color, 'dark');
+  font-family: $font-default;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  font-size: rem(16px);
+
+  @media only screen and (max-width: 1280px) {
+    font-size: math.div(100, 80) + vw;
+  }
+
+  @include mobile {
+    font-size: math.div(100, 20) + vw;
+  }
+}
+
+main.main {
+  flex: 1;
+}
+
+#app {
+  height: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}

@@ -1,0 +1,26 @@
+@mixin mobile {
+  @media (max-width: 576px) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (min-width: 577px) {
+    @content;
+  }
+}
+
+@mixin container {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: rem(1216px);
+  margin: 0 auto;
+  padding: 0 rem(20px);
+
+  @include mobile {
+    max-width: 100%;
+    padding: 0 rem(10px);
+  }
+
+  @content;
+}
