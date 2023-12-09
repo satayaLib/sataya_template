@@ -34,3 +34,76 @@ main.main {
   flex-direction: column;
   position: relative;
 }
+
+.Pagination {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  width: 100%;
+  padding: 0;
+  color: map-get($theme-color, 'white');
+
+  @include mobile {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+  }
+
+  li {
+    margin-right: rem(5px);
+  }
+  .PaginationControl {
+    min-width: rem(30px);
+    height: rem(30px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    &:hover {
+      color: map-get($theme-color, 'active') !important;
+    }
+
+    @include mobile {
+      display: none;
+    }
+  }
+  svg {
+    width: rem(25px);
+    height: rem(25px);
+    transition: fill 0.5s;
+    fill: currentColor;
+    cursor: pointer;
+  }
+  .Page {
+    background: map-get($theme-color, 'active');
+    border: rem(1px) solid map-get($theme-color, 'blockBorder');
+    border-radius: rem(5px);
+    margin: 0;
+    min-width: rem(30px);
+    height: rem(30px);
+    box-sizing: border-box;
+    padding: 0 rem(5px);
+    font-size: rem(18px);
+    transition: background-color 0.5s;
+    color: map-get($theme-color, 'white');
+    cursor: pointer;
+
+    @include mobile {
+      width: 100%;
+      text-align: center;
+    }
+
+    &:hover {
+      opacity: 0.5;
+    }
+  }
+  .DotsHolder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: rem(30px);
+    svg {
+      height: rem(2px);
+      cursor: default;
+    }
+  }
+}

@@ -13,6 +13,11 @@ const router = createRouter({
       path: '/rules',
       name: 'rules',
       component: () => import('../views/RulesView.vue')
+    },
+    {
+      path: '/shop',
+      name: 'shop',
+      component: () => import('../views/ShopView.vue')
     }
   ]
 });

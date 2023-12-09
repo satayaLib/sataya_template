@@ -16,6 +16,7 @@
     "not dead"
   ],
   "dependencies": {
+    "@hennge/vue3-pagination": "^1.0.17",
     "pinia": "^2.1.7",
     "vue": "^3.3.10",
     "vue-router": "^4.2.5"
