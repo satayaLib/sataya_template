@@ -47,7 +47,7 @@
             <span v-if="activeMap?.mapName">: {{ activeMap.mapName }}</span>
           </div>
         </div>
-        <div class="maps-row maps-image maps-row--nothover" v-if="storeMaps.isLoaded">
+        <div class="maps-row maps-image maps-row--nothover">
           <div class="maps-image" :class="{ 'maps-image--notmods': activeCluster.mods === '' }">
             <div class="maps-image--mods" v-if="activeCluster.mods !== ''">
               <a class="maps-btn" :href="activeCluster.mods" target="_blank"> Коллекция модов </a>

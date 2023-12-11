@@ -181,6 +181,7 @@ onMounted(async () => {
 
     @include mobile {
       padding: 0;
+      display: none;
     }
 
     &__item {

@@ -14,8 +14,18 @@
     <div class="catalog-content">
       <div class="catalog-items">
         <template v-for="product in storeProducts.products" :key="product.id">
-          <ProductItem :product="product" @onClick="(type) => console.log(type, product)" />
+          <ProductItem
+            :product="product"
+            :countInCart="storeCart.getCount(product.id)"
+            @onClick="(detail) => openModal(detail, product)"
+          />
         </template>
+        <p
+          class="catalog-error"
+          v-if="storeProducts.products.length === 0 && storeProducts.isLoaded"
+        >
+          Ничего не найдено
+        </p>
       </div>
       <VPagination
         v-model="page"
@@ -26,19 +36,33 @@
       />
     </div>
   </section>
+
+  <ModalBlock v-if="detailModal.product" @close="detailModal.product = false">
+    <ProductDetail
+      :product="detailModal.product"
+      :count="detailModal.count"
+      :countInCart="storeCart.getCount(detailModal.product.id)"
+      @onClick="openCallback"
+    />
+  </ModalBlock>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, reactive, onMounted } from 'vue';
 import CategoryBlock from '@/components/catalog/CategoryBlock.vue';
 import IconSearch from '@icons/IconSearch.vue';
 import ProductItem from '@/components/catalog/ProductItem.vue';
 import VPagination from '@hennge/vue3-pagination';
+import ModalBlock from '@/components/ModalBlock.vue';
+import ProductDetail from '@/components/catalog/ProductDetail.vue';
 
 import { useCategoriesStore } from '@stores/categories';
 import { useProductsStore } from '@stores/products';
+import { useCartStore } from '@stores/cart';
+
 const storeCategories = useCategoriesStore();
 const storeProducts = useProductsStore();
+const storeCart = useCartStore();
 
 onMounted(() => {
   storeCategories.load();
@@ -48,6 +72,11 @@ onMounted(() => {
 const activeCategoryId = ref(false);
 const searchModel = ref('');
 const page = ref(1);
+
+const detailModal = reactive({
+  product: false,
+  count: 1
+});
 
 const setCategory = (id) => {
   activeCategoryId.value = id;
@@ -62,6 +91,22 @@ const loadProduct = () => {
 
   return storeProducts.load(searchModel.value, filter, page.value);
 };
+
+const openModal = (data, product) => {
+  if (!data.isOpenDetail) {
+    return openCallback({
+      count: data.count,
+      product
+    });
+  }
+
+  detailModal.product = product;
+  detailModal.count = data.count;
+};
+
+const openCallback = ({ count, product }) => {
+  storeCart.updateCount(product, count);
+};
 </script>
 
 <style lang="scss" scope>
@@ -69,6 +114,11 @@ const loadProduct = () => {
   @include container;
   display: flex;
   justify-content: flex-start;
+
+  @include mobile {
+    margin: rem(20px) 0;
+    justify-content: center;
+  }
 
   &-search {
     box-sizing: border-box;

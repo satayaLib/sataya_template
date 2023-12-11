@@ -1,19 +1,50 @@
 <template>
   <article class="product">
-    <div class="product-image">
+    <div
+      class="product-image"
+      :class="{
+        'product-image--click': isSet
+      }"
+      @click="() => (isSet ? $emit('onClick', { isSet, count }) : false)"
+    >
       <img :src="product.images[0].image" />
     </div>
+
+    <div class="product-available">
+      <img src="@assets/ark.webp" v-if="!!product.inAse" />
+      <img src="@assets/arksa.webp" v-if="!!product.inAsa" />
+    </div>
+
     <h3 class="product-name">{{ product.name_ru }}</h3>
     <p class="product-price">
       Цена:
       {{ new Intl.NumberFormat('ru-RU').format(product.price * count) }}&nbsp;
       <IconMoney />
     </p>
-    <CounterBlock :packing="packing" :count="1" @change="(total) => (count = total / packing)" />
+    <CounterBlock
+      :packing="packing"
+      :count="countInCart ? countInCart / packing : 1"
+      :disabled="countInCart ? true : false"
+      @change="(total) => (count = total / packing)"
+    />
 
-    <button class="product-btn" @click="$emit('onClick', isSet)">
+    <button
+      v-if="!countInCart || isSet"
+      class="product-btn"
+      @click="
+        $emit('onClick', {
+          isOpenDetail: !!isSet,
+          count: count * packing,
+          product: product
+        })
+      "
+    >
       <template v-if="!isSet">Купить</template>
       <template v-if="isSet">Подробнее</template>
+    </button>
+
+    <button v-if="countInCart && !isSet" class="product-btn product-btn--disabled">
+      В корзине
     </button>
   </article>
 </template>
@@ -27,6 +58,10 @@ const props = defineProps({
   product: {
     type: Object,
     require: true
+  },
+  countInCart: {
+    type: Number,
+    require: true
   }
 });
 
@@ -34,7 +69,9 @@ const $emit = defineEmits(['onClick']);
 
 const count = ref(1);
 const packing = computed(() => (props.product.items.length > 1 ? 1 : props.product.items[0].count));
-const isSet = computed(() => props.product.items.length > 1);
+const isSet = computed(
+  () => props.product.items.length > 1 || props.product.description_ru.length > 3
+);
 </script>
 
 <style lang="scss" scope>
@@ -55,21 +92,25 @@ const isSet = computed(() => props.product.items.length > 1);
   display: flex;
   flex-direction: column;
 
-  &-count {
-    font-size: rem(15px);
-    color: map-get($theme-color, 'active');
-    background: map-get($theme-color, 'white');
-    padding: rem(5px 3px);
-    border-radius: rem(3px);
-    box-shadow: 0 rem(2px) 0 0 rgba(map-get($theme-color, 'active'), 0.96);
+  &-available {
     position: absolute;
-    top: rem(8px);
-    right: rem(8px);
+    left: rem(10px);
+    top: rem(10px);
+    display: flex;
+    gap: rem(5px);
+
+    img {
+      width: rem(20px);
+    }
   }
 
   &-image {
     height: rem(120px);
     overflow: hidden;
+
+    &--click {
+      cursor: pointer;
+    }
 
     img {
       flex: none;
@@ -133,6 +174,14 @@ const isSet = computed(() => props.product.items.length > 1);
 
     &:hover {
       background: map-get($theme-color, 'active');
+    }
+
+    &--disabled {
+      background: lighten(map-get($theme-color, 'light'), 5);
+
+      &:hover {
+        background: map-get($theme-color, 'light');
+      }
     }
   }
 

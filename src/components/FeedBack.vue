@@ -1,5 +1,5 @@
 <template>
-  <div class="feedback">
+  <div :class="`feedback feedback--bg${typeBg}`">
     <div class="feedback-container">
       <h2>Связь</h2>
       <p>
@@ -15,7 +15,18 @@
 </template>
 
 <script setup>
+import { computed } from 'vue';
 import IconDiscord from '@icons/IconDiscord.vue';
+import { useRoute } from 'vue-router';
+
+const $route = useRoute();
+
+const typeBg = computed(() => {
+  if ($route.name === 'shop') return 2;
+  if ($route.name === 'cart') return 3;
+
+  return 'default';
+});
 </script>
 
 <style lang="scss" scope>

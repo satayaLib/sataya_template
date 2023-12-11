@@ -1,5 +1,10 @@
 <template>
-  <div class="counter">
+  <div
+    class="counter"
+    :class="{
+      'counter--disabled': disabled
+    }"
+  >
     <button class="counter-minus" @click="change(-1)">-</button>
     <input class="counter-input" :value="total" disabled />
     <button class="counter-plus" @click="change(1)">+</button>
@@ -17,6 +22,10 @@ const props = defineProps({
   count: {
     type: Number,
     require: true
+  },
+  disabled: {
+    type: Boolean,
+    default: false
   }
 });
 
@@ -25,6 +34,10 @@ const $emit = defineEmits(['change']);
 const total = ref(props.count * props.packing);
 
 const change = (direction = 1) => {
+  if (props.disabled) {
+    return;
+  }
+
   if (direction === -1) {
     if (total.value - props.packing >= props.packing) {
       total.value -= props.packing;
@@ -44,6 +57,12 @@ const change = (direction = 1) => {
   justify-content: center;
   font-size: rem(18px);
   color: map-get($theme-color, 'white');
+
+  &--disabled &-minus,
+  &--disabled &-plus {
+    border: rem(1px) solid map-get($theme-color, 'blockBorder') !important;
+    cursor: default;
+  }
 
   &-minus,
   &-plus {
