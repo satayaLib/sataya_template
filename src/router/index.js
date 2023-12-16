@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import HomeView from '../views/HomeView.vue';
+import { useProfileStore } from '@/stores/profile';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -25,6 +26,16 @@ const router = createRouter({
       component: () => import('../views/CartView.vue')
     }
   ]
+});
+
+router.beforeEach(async (to, from, next) => {
+  if (to.query?.token) {
+    const storeProfile = useProfileStore();
+    await storeProfile.refreshToken(to.query.token);
+    return next('/');
+  }
+
+  next();
 });
 
 export default router;

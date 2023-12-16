@@ -8,26 +8,56 @@
         <span>{{ storeCart.total }}</span>
       </RouterLink>
 
-      <button class="header-login">Войти</button>
+      <button v-if="!storeProfile.profile" class="header-login" @click="openAuth = true">
+        Войти
+      </button>
+      <div class="header-user" v-if="storeProfile.profile">
+        <div class="header-user__nickname">{{ storeProfile.profile.nickname }}</div>
+        <div class="header-user__avatar">
+          <img v-if="storeProfile.profile.avatar" :src="storeProfile.profile.avatar" />
+        </div>
+        <ul class="header-user__menu">
+          <li>
+            <span> Баланс: {{ new Intl.NumberFormat('ru-RU').format(storeProfile.balance) }} </span>
+            <IconMoney />
+          </li>
+          <li>
+            <a href="#" @click="storeProfile.logout">Выйти</a>
+          </li>
+        </ul>
+      </div>
       <button class="header-openmenu" @click="toggleMenu"><i></i></button>
 
       <div class="header-menu header-menu--mobile">
         <MenuBlock @click="toggleMenu" />
 
-        <button class="header-login">Войти</button>
+        <button v-if="!storeProfile.profile" class="header-login" @click="openAuth = true">
+          Войти
+        </button>
       </div>
     </div>
   </header>
+  <ModalBlock v-if="openAuth && !storeProfile.profile" @close="openAuth = false">
+    <AuthBlock />
+  </ModalBlock>
 </template>
 
 <script setup>
+import { ref } from 'vue';
 import { RouterLink } from 'vue-router';
-import IconCart from '@icons/IconMoney.vue';
+import IconCart from '@icons/IconCart.vue';
+import IconMoney from '@icons/IconMoney.vue';
 import LogoBlock from '@/components/LogoBlock.vue';
 import MenuBlock from '@/components/MenuBlock.vue';
+import ModalBlock from '@/components/ModalBlock.vue';
+import AuthBlock from '@/components/AuthBlock.vue';
 import { useCartStore } from '@stores/cart';
+import { useProfileStore } from '@stores/profile';
 
 const storeCart = useCartStore();
+const storeProfile = useProfileStore();
+
+const openAuth = ref(false);
 
 const toggleMenu = () => {
   document.body.classList.toggle('open-menu');
@@ -205,6 +235,138 @@ const toggleMenu = () => {
     @include mobile {
       @at-root .open-menu #{&} {
         display: block;
+      }
+    }
+  }
+
+  &-user {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-left: rem(30px);
+    position: relative;
+    color: map-get($theme-color, 'white');
+    transition: color 0.5s;
+
+    padding: rem(5px) 0;
+
+    &:hover {
+      color: map-get($theme-color, 'active');
+    }
+    &:hover &__menu {
+      opacity: 1;
+      visibility: visible;
+      z-index: 99;
+    }
+
+    &__nickname {
+      max-width: rem(120px);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-size: rem(20px);
+      letter-spacing: rem(0.6px);
+      color: inherit;
+      margin: 0 rem(10px) 0 0;
+      text-decoration: none;
+
+      @include mobile {
+        margin: 0 0 0 rem(10px);
+      }
+    }
+    &__avatar {
+      width: rem(41px);
+      height: rem(41px);
+      border: rem(1px) solid map-get($theme-color, 'active');
+      background: map-get($theme-color, 'block');
+      border-radius: 50%;
+      box-sizing: border-box;
+      overflow: hidden;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      text-decoration: none;
+
+      @include mobile {
+        width: rem(30px);
+        height: rem(30px);
+      }
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      svg {
+        height: 90%;
+        object-fit: cover;
+        fill: map-get($theme-color, 'white');
+      }
+    }
+
+    &__menu {
+      box-sizing: border-box;
+      width: auto;
+      background: transparentize(map-get($theme-color, 'block'), 0.1);
+      list-style: none;
+      padding: rem(10px) rem(22px);
+      margin: 0;
+      position: absolute;
+      top: 100%;
+      right: 0;
+      border: rem(1px) solid map-get($theme-color, 'blockBorder');
+      border-radius: rem(5px);
+      font-size: rem(18px);
+      color: map-get($theme-color, 'white');
+      opacity: 0;
+      visibility: hidden;
+      z-index: 0;
+
+      transition:
+        opacity 0.5s,
+        visibility 0.5s;
+
+      li {
+        padding: rem(10px) 0;
+        display: flex;
+        color: inherit;
+        white-space: nowrap;
+        letter-spacing: rem(0.54px);
+
+        &:last-child {
+          border-top: rem(1px) solid map-get($theme-color, 'blockBorder');
+        }
+      }
+
+      a {
+        text-decoration: none;
+        color: inherit;
+        transition: color 0.5s;
+
+        &:hover {
+          color: map-get($theme-color, 'active');
+        }
+      }
+
+      svg {
+        width: rem(20px);
+        height: rem(20px);
+        fill: currentColor;
+        margin-left: rem(10px);
+        transition: fill 0.5s;
+      }
+    }
+
+    @include mobile {
+      display: none;
+    }
+
+    &--mobile {
+      display: none;
+      margin: 0;
+
+      @include mobile {
+        display: flex;
       }
     }
   }

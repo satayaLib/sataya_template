@@ -57,7 +57,7 @@
           })
         "
       >
-        Купить{{ countInCart }}
+        Купить
       </button>
       <button v-if="countInCart" class="modal-btn modal-btn--disabled">В корзине</button>
     </div>

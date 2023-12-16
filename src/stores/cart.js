@@ -30,6 +30,11 @@ export const useCartStore = defineStore('cart', () => {
     localStorage.setItem('sataya.cart', JSON.stringify(items));
   };
 
+  const removeAll = () => {
+    localStorage.removeItem('sataya.cart');
+    items.splice(0, items.length);
+  };
+
   const getCount = (id) => {
     const findProduct = items.find((item) => item.id === id);
 
@@ -42,12 +47,23 @@ export const useCartStore = defineStore('cart', () => {
     return items.reduce((acc, item) => (acc += item.price * (item.count / item.packing)), 0);
   });
 
+  const orderFormatItems = computed(() =>
+    items.map((item) => {
+      return {
+        id: item.id,
+        count: item.count / item.packing
+      };
+    })
+  );
+
   return {
     items,
+    orderFormatItems,
     total,
     totalPrice,
     updateCount,
     removeItem,
+    removeAll,
     getCount
   };
 });

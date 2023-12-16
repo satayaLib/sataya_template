@@ -24,7 +24,7 @@
             <span>
               {{ new Intl.NumberFormat('ru-RU').format(item.price) }}
             </span>
-            <IconMoney />
+            <IconMoney class="cart-currency" />
           </div>
           <div class="cart-col cart-col--2">
             <CounterBlock
@@ -52,7 +52,10 @@
           <IconMoney class="cart-currency" />
         </div>
       </div>
-      <p class="cart-error">ВАЖНО! Вы должны быть онлайн на любой карте из кластера.<br /></p>
+      <p class="cart-error">
+        ВАЖНО! Будьте готовы получить заказ - приготовьте ящики для хранения.<br />
+        В случае заказа дино, подготовьте безопасное место возле себя.
+      </p>
       <button
         class="cart-order"
         :class="loader ? 'cart-order--loader' : ''"
@@ -61,6 +64,9 @@
       >
         Получить
       </button>
+      <p class="cart-error" v-if="error">
+        {{ error }}
+      </p>
     </template>
   </section>
 </template>
@@ -71,12 +77,29 @@ import IconClose from '@icons/IconClose.vue';
 import IconMoney from '@icons/IconMoney.vue';
 import CounterBlock from '@/components/CounterBlock.vue';
 import { useCartStore } from '@stores/cart';
+import { useProfileStore } from '@stores/profile';
 
 const storeCart = useCartStore();
+const storeProfile = useProfileStore();
 
 const loader = ref(false);
+const error = ref(false);
+
 const createOrder = async () => {
   loader.value = true;
+  error.value = false;
+
+  const res = await storeProfile.createOrder(storeCart.orderFormatItems);
+
+  if (res.status !== 200) {
+    loader.value = false;
+    error.value = res.data.message;
+    return;
+  }
+
+  storeCart.removeAll();
+  loader.value = false;
+  storeProfile.getBalance();
 };
 </script>
 
