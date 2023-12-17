@@ -18,8 +18,12 @@
         </div>
         <ul class="header-user__menu">
           <li>
-            <span> Баланс: {{ new Intl.NumberFormat('ru-RU').format(storeProfile.balance) }} </span>
-            <IconMoney />
+            <a href="#" @click="openBalance = true">
+              <span>
+                Баланс: {{ new Intl.NumberFormat('ru-RU').format(storeProfile.balance) }}
+              </span>
+              <IconMoney />
+            </a>
           </li>
           <li>
             <a href="#" @click="storeProfile.logout">Выйти</a>
@@ -40,6 +44,9 @@
   <ModalBlock v-if="openAuth && !storeProfile.profile" @close="openAuth = false">
     <AuthBlock />
   </ModalBlock>
+  <ModalBlock v-if="openBalance && storeProfile.profile" @close="openBalance = false">
+    <BalanceBlock />
+  </ModalBlock>
 </template>
 
 <script setup>
@@ -51,6 +58,7 @@ import LogoBlock from '@/components/LogoBlock.vue';
 import MenuBlock from '@/components/MenuBlock.vue';
 import ModalBlock from '@/components/ModalBlock.vue';
 import AuthBlock from '@/components/AuthBlock.vue';
+import BalanceBlock from '@/components/BalanceBlock.vue';
 import { useCartStore } from '@stores/cart';
 import { useProfileStore } from '@stores/profile';
 
@@ -58,6 +66,7 @@ const storeCart = useCartStore();
 const storeProfile = useProfileStore();
 
 const openAuth = ref(false);
+const openBalance = ref(false);
 
 const toggleMenu = () => {
   document.body.classList.toggle('open-menu');

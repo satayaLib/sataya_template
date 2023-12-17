@@ -69,6 +69,9 @@
       </p>
     </template>
   </section>
+  <ModalBlock v-if="openAuth && !storeProfile.profile" @close="openAuth = false">
+    <AuthBlock />
+  </ModalBlock>
 </template>
 
 <script setup>
@@ -78,14 +81,21 @@ import IconMoney from '@icons/IconMoney.vue';
 import CounterBlock from '@/components/CounterBlock.vue';
 import { useCartStore } from '@stores/cart';
 import { useProfileStore } from '@stores/profile';
+import ModalBlock from '@/components/ModalBlock.vue';
+import AuthBlock from '@/components/AuthBlock.vue';
 
 const storeCart = useCartStore();
 const storeProfile = useProfileStore();
 
 const loader = ref(false);
 const error = ref(false);
+const openAuth = ref(false);
 
 const createOrder = async () => {
+  if (!storeProfile.profile) {
+    openAuth.value = true;
+    return;
+  }
   loader.value = true;
   error.value = false;
 

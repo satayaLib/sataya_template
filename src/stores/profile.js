@@ -45,6 +45,7 @@ export const useProfileStore = defineStore('profile', () => {
 
       localStorage.setItem('sataya:access_token', access_token.value);
       localStorage.setItem('sataya:refresh_token', refresh_token.value);
+      getBalance();
     } else {
       logout();
     }
@@ -110,6 +111,22 @@ export const useProfileStore = defineStore('profile', () => {
     }
   };
 
+  const createPayment = async (type, amount) => {
+    if (!access_token.value) return;
+    const res = await Api.post(
+      '/profile/payment',
+      {
+        type,
+        amount
+      },
+      {
+        Authorization: `Bearer ${access_token.value}`
+      }
+    );
+
+    return res;
+  };
+
   getBalance();
 
   return {
@@ -117,6 +134,7 @@ export const useProfileStore = defineStore('profile', () => {
     authCode,
     profile,
     balance,
+    createPayment,
     getBalance,
     logout,
     createOrder,
