@@ -1,7 +1,3 @@
-const API_URL = 'https://rest.sataya.ru/v1/public';
-// const API_URL = 'http://localhost:3000/v1/public';
-const CAMPAIGN_ID = '3fa85f64-5717-4562-b3fc-2c963f66afa6';
-
 export default class Api {
   static getURL() {
     return API_URL;
