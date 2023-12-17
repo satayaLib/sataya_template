@@ -70,7 +70,10 @@ const $emit = defineEmits(['onClick']);
 const count = ref(1);
 const packing = computed(() => (props.product.items.length > 1 ? 1 : props.product.items[0].count));
 const isSet = computed(
-  () => props.product.items.length > 1 || props.product.description_ru.length > 3
+  () =>
+    props.product.items.length > 1 ||
+    props.product.description_ru.length > 3 ||
+    (props.product.items.length === 1 && props.product.items[0].level > 0)
 );
 </script>
 

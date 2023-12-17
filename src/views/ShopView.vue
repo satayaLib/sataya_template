@@ -80,6 +80,8 @@ const detailModal = reactive({
 
 const setCategory = (id) => {
   activeCategoryId.value = id;
+  page.value = 1;
+  searchModel.value = '';
   loadProduct();
 };
 

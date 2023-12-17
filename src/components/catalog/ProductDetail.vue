@@ -22,7 +22,7 @@
     </div>
 
     <div class="product-detail-text">
-      {{ product.description_ru }}
+      <p v-html="product.description_ru.replace(/[\r\n]/g, '<br>')"></p>
 
       <br />
       <template v-if="product.items.length === 1 && product.items[0].level > 0">

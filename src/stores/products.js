@@ -7,15 +7,15 @@ export const useProductsStore = defineStore('products', () => {
   const total = ref(0);
   const isLoaded = ref(false);
 
-  const load = async (search = false, filter = {}, page = 1, limit = 25, order) => {
+  const load = async (search = false, filter = {}, page = 1, limit = 16, order) => {
     isLoaded.value = false;
 
     const data = {
       ...filter,
       page,
       limit,
-      sort: order?.[0]?.order || 'desc',
-      order: order?.[0]?.key || 'createdAt'
+      sort: order?.[0]?.order || 'asc',
+      order: order?.[0]?.key || 'price'
     };
 
     if (search) {
