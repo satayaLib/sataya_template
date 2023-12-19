@@ -1,4 +1,4 @@
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { defineStore } from 'pinia';
 import Api from '@/lib/api.js';
 
@@ -45,7 +45,6 @@ export const useProfileStore = defineStore('profile', () => {
 
       localStorage.setItem('sataya:access_token', access_token.value);
       localStorage.setItem('sataya:refresh_token', refresh_token.value);
-      getBalance();
     } else {
       logout();
     }
@@ -60,12 +59,9 @@ export const useProfileStore = defineStore('profile', () => {
   const exp = computed(() => {
     if (!access_token.value) return false;
     const parsed = parseJwt(access_token.value);
+
     return parsed.exp;
   });
-
-  if (access_token.value && exp.value <= new Date().getTime() / 1000) {
-    refreshToken(refresh_token.value);
-  }
 
   const authCode = async (code) => {
     const res = await Api.post('/profile/auth/code', {
@@ -127,7 +123,15 @@ export const useProfileStore = defineStore('profile', () => {
     return res;
   };
 
-  getBalance();
+  onMounted(async () => {
+    if (!access_token.value) return;
+
+    if (exp.value <= new Date().getTime() / 1000) {
+      await refreshToken(refresh_token.value);
+    }
+
+    getBalance();
+  });
 
   return {
     steamAuthUrl,
