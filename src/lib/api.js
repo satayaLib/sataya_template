@@ -1,4 +1,4 @@
-export default class Api {
+class Api {
   static getURL() {
     return API_URL;
   }
@@ -8,9 +8,11 @@ export default class Api {
   }
 
   static get(path, params = {}, headers = {}) {
-    const url = `${path}?campaignId=${CAMPAIGN_ID}&${new URLSearchParams(params).toString()}`;
+    const url = `${path}?campaignId=${Api.getCampaignId()}&${new URLSearchParams(
+      params
+    ).toString()}`;
 
-    return fetch(`${API_URL}${url}`, {
+    return fetch(`${Api.getURL()}${url}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -30,7 +32,7 @@ export default class Api {
   static post(path, params = {}, headers = {}) {
     const body = JSON.stringify(params);
 
-    return fetch(`${API_URL}${path}?campaignId=${CAMPAIGN_ID}`, {
+    return fetch(`${Api.getURL()}${path}?campaignId=${Api.getCampaignId()}`, {
       method: 'POST',
       body,
       headers: {
@@ -48,3 +50,5 @@ export default class Api {
     });
   }
 }
+
+export default Api;

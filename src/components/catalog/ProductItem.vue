@@ -5,7 +5,16 @@
       :class="{
         'product-image--click': isSet
       }"
-      @click="() => (isSet ? $emit('onClick', { isSet, count }) : false)"
+      @click="
+        () =>
+          !!isSet
+            ? $emit('onClick', {
+                isOpenDetail: !!isSet,
+                count: count * packing,
+                product: product
+              })
+            : false
+      "
     >
       <img :src="product.images[0].image" />
     </div>

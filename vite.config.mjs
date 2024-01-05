@@ -4,22 +4,25 @@ import { defineConfig, loadEnv } from 'vite';
 
 import vue from '@vitejs/plugin-vue';
 import autoprefixer from 'autoprefixer';
+import legacy from '@vitejs/plugin-legacy';
+import { ViteImageOptimizer } from 'vite-plugin-image-optimizer';
 import { browserslist } from './package.json';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd(), '');
+  /* eslint-disable-line */const env = loadEnv(mode, process.cwd(), '');
 
   return {
     define: {
       CAMPAIGN_ID: JSON.stringify(env.CAMPAIGN_ID),
       API_URL: JSON.stringify(env.API_URL),
     },
-    build: {
-      targets: browserslist,
-    },
     plugins: [
       vue(),
+      legacy({
+        targets: browserslist,
+      }),
+      ViteImageOptimizer({})
     ],
     resolve: {
       alias: {

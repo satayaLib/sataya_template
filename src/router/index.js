@@ -42,6 +42,8 @@ router.beforeEach(async (to, from, next) => {
   if (to.query?.token) {
     const storeProfile = useProfileStore();
     await storeProfile.refreshToken(to.query.token);
+    await storeProfile.getBalance();
+
     return next('/');
   }
 
